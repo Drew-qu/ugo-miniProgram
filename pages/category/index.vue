@@ -7,7 +7,7 @@
 			<!-- 顶级分类 -->
 			<view class="sup">
 				<scroll-view scroll-y>
-					<text v-for="item in categoryList" :class="item.cat_id === id ? 'active' : ''" :key="item.cat_id" @click="active(item)" >{{item.cat_name}}</text><!-- class="active" -->
+					<text v-for="item in categoryList" :class="item.cat_id === id ? 'active' : ''" :key="item.cat_id" @click="active(item)" >{{item.cat_name}}</text>
 				</scroll-view>  
 			</view>
 			<!-- 子级分类 -->

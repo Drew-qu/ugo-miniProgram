@@ -41,6 +41,17 @@
 
 <script>
   export default {
+	  onLoad(query) {
+	  	// console.log(query);
+		this.goodsId = query.query
+		// console.log(this.goodsId);
+		this.getGoodsDetail()
+	  },
+	  data() {
+		  return{
+			  goodsId: 0
+		  }
+	  },
 
     methods: {
       goCart() {
@@ -52,7 +63,12 @@
         uni.navigateTo({
           url: '/subpkg/pages/order/index'
         })
-      }
+      },
+	  async getGoodsDetail() {
+		  if(!this.goodsId) return
+		  const { data: res } = await uni.$http.get('/api/public/v1/goods/detail',{goodsId:this.goodsId})
+		  console.log(res);
+	  }
     }
   }
 </script>
