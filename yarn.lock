@@ -6,3 +6,8 @@
   version "0.2.1"
   resolved "https://registry.npmmirror.com/@escook/request-miniprogram/-/request-miniprogram-0.2.1.tgz#c3b13249f5a94601f2949f4d68245df9a5683819"
   integrity sha512-ueWV5YsaEm/ycQZuEjMiA88GFMhfBQSjy9GrP9omy4xAQajkGTbYIlnhzsDfWzRPmRC1fKmAiKMrCVcgS+SHcQ==
+
+lodash@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.npmmirror.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==

@@ -3,7 +3,7 @@
 	<view class="search" :class="{ focused: focused }">
 		<!-- 搜索框 -->
 		<view class="input-wrap" @click="goSearch">
-			<input class="input" type="text" :placeholder="placeholder" />
+			<input class="input" v-model="query" @input="searchQuery" @confirm="addHistory" type="text" :placeholder="placeholder" />
 			<text class="cancle" @click.stop="cancleSearch">取消</text>
 		</view>
 		<!-- 搜索结果 -->
@@ -13,35 +13,27 @@
 				<text class="clear"></text>
 			</view>
 			<view class="history">
-				<navigator class="navigator" url="/subpkg/pages/list/index">小米</navigator>
-				<navigator class="navigator" url="/subpkg/pages/list/index">智能电视</navigator>
-				<navigator class="navigator" url="/subpkg/pages/list/index">小米空气净化器</navigator>
-				<navigator class="navigator" url="/subpkg/pages/list/index">西门子洗碗机</navigator>
-				<navigator class="navigator" url="/subpkg/pages/list/index">华为手机</navigator>
-				<navigator class="navigator" url="/subpkg/pages/list/index">苹果</navigator>
-				<navigator class="navigator" url="/subpkg/pages/list/index">锤子</navigator>
+				<navigator v-for="item in queryHistory" :key="item" class="navigator" :url="`/subpkg/pages/list/index?query=${item}`">{item}</navigator>
 			</view>
 			<!-- 结果 -->
-			<scroll-view scroll-y class="result">
-				<navigator class="navigator" url="/subpkg/pages/goods/index">小米</navigator>
-				<navigator class="navigator" url="/subpkg/pages/goods/index">小米</navigator>
-				<navigator class="navigator" url="/subpkg/pages/goods/index">小米</navigator>
-				<navigator class="navigator" url="/subpkg/pages/goods/index">小米</navigator>
-				<navigator class="navigator" url="/subpkg/pages/goods/index">小米</navigator>
-				<navigator class="navigator" url="/subpkg/pages/goods/index">小米</navigator>
-				<navigator class="navigator" url="/subpkg/pages/goods/index">小米</navigator>
-				<navigator class="navigator" url="/subpkg/pages/goods/index">小米</navigator>
+			<scroll-view scroll-y v-if="searchList.length" class="result">
+				<navigator v-for="item in searchList" :key="item.goods_id" class="navigator" :url="`/subpkg/pages/goods/index?query=${item.goods_id}`">{{item.goods_name}}</navigator>
 			</scroll-view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {debounce} from 'lodash';
 export default {
 	data() {
 		return {
 			focused: false,
-			placeholder: ''
+			placeholder: '',
+			query: '',
+			searchList: [],
+			// 搜索历史
+			queryHistory: []
 		}
 	},
 	methods: {
@@ -60,6 +52,8 @@ export default {
 		cancleSearch() {
 			this.focused = false
 			this.placeholder = ''
+			this.query = '',
+			this.searchList = []
 
 			// 触发父组件自定义事件
 			this.$emit('search', {
@@ -68,6 +62,25 @@ export default {
 
 			// 显示tabBar
 			uni.showTabBar()
+		},
+		// 监听用户输入
+		searchQuery: debounce(async function() {
+			// console.log(this.query);
+			if(this.query.trim().length === 0) return this.searchList = []
+			const { data: res } = await uni.$http.get('/api/public/v1/goods/qsearch',{query: this.query})
+			// console.log(res);
+			if(res.meta.status !== 200) return uni.showToast({
+				title: '数据加载失败!',
+				duration: 1500,
+				icon: 'none'
+			})
+			this.searchList = res.message
+		},500),
+		// 监听输入历史
+		addHistory() {
+			// 如果有重复搜索的关键字, 不再重复记录
+			if(this.queryHistory.includes(this.query)) return
+			this.queryHistory.push(this.query)
 		}
 	}
 }
