@@ -1,4 +1,4 @@
-<template>
+<template >
   <view>
     <!-- 筛选 -->
     <view class="filter">
@@ -7,7 +7,7 @@
       <text>价格</text>
     </view>
     <!-- 商品列表 -->
-    <scroll-view  class="goods" scroll-y @scrolltolower="getMore">
+    <scroll-view  class="goods" scroll-y :scroll-top="scrollTop" @scroll = 'scroll' @scrolltolower="getMore">
       <view v-for="item in goodsList" :key="item.goods_id" class="item" @click="goDetail(item.goods_id)">
         <!-- 商品图片 -->
         <image class="pic" :src="item.goods_small_logo"></image>
@@ -19,9 +19,12 @@
           </view>
         </view>
       </view>
+	  <view v-if="goodsList.length === 0" class="tips">{{msg}}</view>
       <!-- 加载更多 -->
-      <view class="getMore">正在加载...</view>
+      <view class="getMore" v-if="hasMore">正在加载...</view>
     </scroll-view>
+	<!-- 回到顶部 -->
+	<view class="goTop icon-top" @click="goTop"></view>
   </view>
 </template>
 
@@ -38,7 +41,13 @@
 		return {
 			name:'',
 			goodsList: [],
-			nextPage: 1
+			nextPage: 1,
+			msg: '',
+			hasMore: true,
+			scrollTop: 0,
+			old: {
+				scrollTop: 0
+			}
 		}
 	},
     methods: {
@@ -51,7 +60,7 @@
 	  async getGoodsList() {
 		  if(!this.name) return
 		  // console.log(this.name);
-		const {data : res} = await uni.$http.get('/api/public/v1/goods/search',{query: this.name,pagenum:this.nextPage++,pagesize:5})
+		const {data : res} = await uni.$http.get('/api/public/v1/goods/search',{query: this.name,pagenum:this.nextPage++,pagesize:6})
 		// console.log(res);
 		if(res.meta.status !== 200) {
 			return uni.showToast({
@@ -60,15 +69,29 @@
 				icon: 'none'
 			})
 		}
-		this.goodsList = res.message.goods
+		// 更新数据，重新渲染
+		this.goodsList = this.goodsList.concat(res.message.goods)
+		// this.goodsList = res.message.goods
+		// 是否有更多数据
+		this.hasMore = this.goodsList.length < res.message.total
+		if(this.goodsList.length === 0) this.msg = '啥也没有 ! ! !'
 		// console.log(this.goodsList);
 	  },
 	  getMore: debounce(function () {
 		  this.getGoodsList()
-		  uni.pageScrollTo({
-		  	scrollTop: 0
+	  },500),
+	  scroll: function(e) {
+		  this.old.scrollTop = e.detail.scrollTop
+	  },
+	  // 返回顶部
+	  goTop(e) {
+		  // console.log(11);
+		  this.scrollTop = this.old.scrollTop
+		  this.$nextTick(()=>{
+				this.scrollTop = 0 
 		  })
-	  },500)
+	  },
+	  
     }
   }
 </script>
@@ -147,5 +170,23 @@
         font-size: 22rpx;
       }
     }
+  }
+  .goTop {
+  	position: fixed;
+  	bottom: 30rpx;
+  	/* #ifdef H5 */
+  	bottom: 65px;
+  	/* #endif */
+  	right: 30rpx;
+  
+  	display: flex;
+  	justify-content: center;
+  	align-items: center;
+  	width: 100rpx;
+  	height: 100rpx;
+  	font-size: 48rpx;
+  	color: #666;
+  	border-radius: 50%;
+  	background-color: rgba(248, 248, 248, 0.8);
   }
 </style>

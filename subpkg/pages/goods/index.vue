@@ -2,32 +2,20 @@
   <view class="wrapper">
     <!-- 商品图片 -->
     <swiper class="pics" indicator-dots indicator-color="rgba(255, 255, 255, 0.6)" indicator-active-color="#fff">
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_1.jpg"></image>
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_2.jpg"></image>
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_3.jpg"></image>
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_4.jpg"></image>
-      </swiper-item>
-      <swiper-item>
-        <image src="http://static.botue.com/ugo/uploads/detail_5.jpg"></image>
+      <swiper-item v-for="item in goodsDetail.pics" :key="item.pics_id">
+        <image :src="item.pics_big_url"></image>
       </swiper-item>
     </swiper>
     <!-- 基本信息 -->
     <view class="meta">
-      <view class="price">￥199</view>
-      <view class="name">初语秋冬新款毛衣女 套头宽松针织衫简约插肩袖上衣</view>
+      <view class="price">￥{{goodsDetail.goods_price}}</view>
+      <view class="name">{{goodsDetail.goods_name}}</view>
       <view class="shipment">快递: 免运费</view>
       <text class="collect icon-star">收藏</text>
     </view>
     <!-- 商品详情 -->
     <view class="detail">
-      <rich-text></rich-text>
+      <rich-text v-html="goodsDetail.goods_introduce"></rich-text>
     </view>
     <!-- 操作 -->
     <view class="action">
@@ -49,7 +37,8 @@
 	  },
 	  data() {
 		  return{
-			  goodsId: 0
+			  goodsId: 0,
+			  goodsDetail: {}
 		  }
 	  },
 
@@ -66,8 +55,16 @@
       },
 	  async getGoodsDetail() {
 		  if(!this.goodsId) return
-		  const { data: res } = await uni.$http.get('/api/public/v1/goods/detail',{goodsId:this.goodsId})
-		  console.log(res);
+		  const { data: res } = await uni.$http.get('/api/public/v1/goods/detail',{goods_id:this.goodsId})
+		  // console.log(res);
+		  if(res.meta.status !== 200) {
+			  return uni.showToast({
+			  	title: '数据加载失败!',
+				duration: 1500,
+				icon: 'none'
+			  })
+		  }
+		  this.goodsDetail = res.message
 	  }
     }
   }
