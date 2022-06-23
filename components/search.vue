@@ -10,10 +10,10 @@
 		<view class="content">
 			<view class="title">
 				搜索历史
-				<text class="clear"></text>
+				<text class="clear" @click="clearHistory"></text>
 			</view>
 			<view class="history">
-				<navigator v-for="item in queryHistory" :key="item" class="navigator" :url="`/subpkg/pages/list/index?query=${item}`">{item}</navigator>
+				<navigator v-for="item in queryHistory" :key="item" class="navigator" :url="`/subpkg/pages/list/index?query=${item}`">{{item}}</navigator>
 			</view>
 			<!-- 结果 -->
 			<scroll-view scroll-y v-if="searchList.length" class="result">
@@ -33,7 +33,7 @@ export default {
 			query: '',
 			searchList: [],
 			// 搜索历史
-			queryHistory: []
+			queryHistory: uni.getStorageSync('history') || []
 		}
 	},
 	methods: {
@@ -81,6 +81,13 @@ export default {
 			// 如果有重复搜索的关键字, 不再重复记录
 			if(this.queryHistory.includes(this.query)) return
 			this.queryHistory.push(this.query)
+			// console.log(this.queryHistory);
+			// 将搜索历史存入到本地
+			uni.setStorageSync('history',this.queryHistory)
+		},
+		clearHistory() {
+			uni.removeStorageSync('history')
+			this.queryHistory = []
 		}
 	}
 }
