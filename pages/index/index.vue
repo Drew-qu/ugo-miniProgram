@@ -4,7 +4,7 @@
 		<!-- 焦点图 -->
 		<swiper class="banner" indicator-dots indicator-color="rgba(255, 255, 255, 0.6)" indicator-active-color="#fff">
 			<swiper-item v-for="item in swiperList" :key="item.goods_id">
-				<navigator :url="`/subpkg/pages/goods/index?id=${item.goods_id}`"><image :src="item.image_src"></image></navigator>
+				<navigator :url="`/subpkg/pages/goods/index?query=${item.goods_id}`"><image :src="item.image_src"></image></navigator>
 			</swiper-item>
 		</swiper>
 		<!-- 导航条 -->
