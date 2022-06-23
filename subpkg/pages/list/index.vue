@@ -7,8 +7,8 @@
       <text>价格</text>
     </view>
     <!-- 商品列表 -->
-    <scroll-view  class="goods" scroll-y>
-      <view v-for="item in goodsList" :key="item.cat_name" class="item" @click="goDetail(item.goods_id)">
+    <scroll-view  class="goods" scroll-y @scrolltolower="getMore">
+      <view v-for="item in goodsList" :key="item.goods_id" class="item" @click="goDetail(item.goods_id)">
         <!-- 商品图片 -->
         <image class="pic" :src="item.goods_small_logo"></image>
         <!-- 商品信息 -->
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+	import {debounce} from 'lodash';
   export default {
 	onLoad(option) {
 		// console.log(option);
@@ -36,19 +37,21 @@
 	data() {
 		return {
 			name:'',
-			goodsList: []
+			goodsList: [],
+			nextPage: 1
 		}
 	},
     methods: {
       goDetail(goodsId) {
-		  console.log(goodsId)
+		  // console.log(goodsId)
         uni.navigateTo({
-          url: '/subpkg/pages/goods/index'
+          url: `/subpkg/pages/goods/index?query=` + goodsId
         })
       },
 	  async getGoodsList() {
+		  if(!this.name) return
 		  // console.log(this.name);
-		const {data : res} = await uni.$http.get('/api/public/v1/goods/search',{query: this.name})
+		const {data : res} = await uni.$http.get('/api/public/v1/goods/search',{query: this.name,pagenum:this.nextPage++,pagesize:5})
 		// console.log(res);
 		if(res.meta.status !== 200) {
 			return uni.showToast({
@@ -59,7 +62,13 @@
 		}
 		this.goodsList = res.message.goods
 		// console.log(this.goodsList);
-	  }
+	  },
+	  getMore: debounce(function () {
+		  this.getGoodsList()
+		  uni.pageScrollTo({
+		  	scrollTop: 0
+		  })
+	  },500)
     }
   }
 </script>
