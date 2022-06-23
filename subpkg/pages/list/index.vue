@@ -8,7 +8,7 @@
     </view>
     <!-- 商品列表 -->
     <scroll-view  class="goods" scroll-y>
-      <view v-for="item in goodsList" :key="item.cat_name" class="item" @click="goDetail">
+      <view v-for="item in goodsList" :key="item.cat_name" class="item" @click="goDetail(item.goods_id)">
         <!-- 商品图片 -->
         <image class="pic" :src="item.goods_small_logo"></image>
         <!-- 商品信息 -->
@@ -40,7 +40,8 @@
 		}
 	},
     methods: {
-      goDetail() {
+      goDetail(goodsId) {
+		  console.log(goodsId)
         uni.navigateTo({
           url: '/subpkg/pages/goods/index'
         })
@@ -57,6 +58,7 @@
 			})
 		}
 		this.goodsList = res.message.goods
+		// console.log(this.goodsList);
 	  }
     }
   }
