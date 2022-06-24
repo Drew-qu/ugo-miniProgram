@@ -49,21 +49,20 @@
 		</view>
 		<!-- 其它 -->
 		<view class="extra">
+		  <label class="checkall" @click="toggleAll">
+		    <icon type="success" :color="allChecked ? '#ea4451' : '#ccc'" size="20"></icon>
+		    全选
+		  </label>
+		  <view class="total">
+		    合计: <text>￥</text><label>{{ amount }}</label><text>.00</text>
+		  </view>
+		  <view class="pay">结算({{checkedCount}})</view>
 		</view>
 	</template>
 	<view class="tips" v-else>
 		啥也没有 ~~~
-		<button type="primary" @click="goBuyGoods">去逛逛吧!!!</button>
+		<button type="primary" @click="goBuyGoods" class="guanggaung">去逛逛吧!!!</button>
 	</view>
-      <label class="checkall" @click="toggleAll">
-        <icon type="success" :color="allChecked ? '#ea4451' : '#ccc'" size="20"></icon>
-        全选
-      </label>
-      <view class="total">
-        合计: <text>￥</text><label>{{ amount }}</label><text>.00</text>
-      </view>
-      <view class="pay">结算({{checkedCount}})</view>
-    </view>
   </view>
 </template>
 
@@ -317,6 +316,16 @@
       background-color: #ea4451;
       color: #fff;
     }
+  }
+  .guanggaung{
+	  position: fixed;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%,-50%);
+	  width: 200rpx;
+	  height: 200rpx;
+	  border-radius: 50%;
+	  line-height: 200rpx;
   }
 </style>
 
