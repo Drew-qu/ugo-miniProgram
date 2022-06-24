@@ -51,7 +51,10 @@
 		<view class="extra">
 		</view>
 	</template>
-	
+	<view class="tips" v-else>
+		啥也没有 ~~~
+		<button type="primary" @click="goBuyGoods">去逛逛吧!!!</button>
+	</view>
       <label class="checkall" @click="toggleAll">
         <icon type="success" :color="allChecked ? '#ea4451' : '#ccc'" size="20"></icon>
         全选
