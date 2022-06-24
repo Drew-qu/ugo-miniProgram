@@ -15,19 +15,21 @@
     </view>
     <!-- 商品详情 -->
     <view class="detail">
-      <rich-text v-html="goodsDetail.goods_introduce"></rich-text>
+      <!-- <rich-text :nodes="goodsDetail.goods_introduce"></rich-text> -->
+	  <view v-html="goodsDetail.goods_introduce"></view>
     </view>
     <!-- 操作 -->
     <view class="action">
       <button open-type="contact" class="icon-handset">联系客服</button>
-      <text class="cart icon-cart" @click="goCart">购物车</text>
-      <text class="add">加入购物车</text>
+      <text class="cart icon-cart" @click="goCart">购物车 {{cartCount}}</text>
+      <text class="add" @click="addToCart">加入购物车</text>
       <text class="buy" @click="createOrder">立即购买</text>
     </view>
   </view>
 </template>
 
 <script>
+	import {mapState, mapGetters} from 'vuex';
   export default {
 	  onLoad(query) {
 	  	// console.log(query);
@@ -41,6 +43,10 @@
 			  goodsDetail: {}
 		  }
 	  },
+	  computed: {
+		...mapState('m_cart',['carts']),  
+		...mapGetters('m_cart',['cartCount'])
+	  },
 
     methods: {
       goCart() {
@@ -48,6 +54,19 @@
           url: '/pages/cart/index'
         })
       },
+	  addToCart() {
+		  const goods = {
+		  	goods_id: this.goodsDetail.goods_id,
+		  	goods_name: this.goodsDetail.goods_name,
+		  	goods_price: this.goodsDetail.goods_price,
+		  	goods_small_logo: this.goodsDetail.goods_small_logo,
+		  	goods_count: 1,
+		  	goods_state: true
+		  }
+		  // 将数据存储到 mutations
+		  this.$store.commit('m_cart/addToCart',goods)
+		  // console.log(this.cartCount);
+	  },
       createOrder() {
         uni.navigateTo({
           url: '/subpkg/pages/order/index'
@@ -65,6 +84,7 @@
 			  })
 		  }
 		  this.goodsDetail = res.message
+		  // console.log(this.goodsDetail);
 	  }
     }
   }

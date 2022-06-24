@@ -24,7 +24,7 @@
       <view class="getMore" v-if="hasMore">正在加载...</view>
     </scroll-view>
 	<!-- 回到顶部 -->
-	<view class="goTop icon-top" @click="goTop"></view>
+	<view class="goTop icon-top" v-if="old.scrollTop > 200" @click="goTop"></view>
   </view>
 </template>
 
