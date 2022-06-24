@@ -17,7 +17,7 @@
 				{{address.detailInfo}}
 			  </view>
 		  </template>
-		  <button type="primary" @click="saveAddress" v-else>添加收货地址</button>
+			<button type="primary" @click="saveAddress" v-else>添加收货地址</button>
 		</view>
 		<!-- 购物车 -->
 		<view class="carts">

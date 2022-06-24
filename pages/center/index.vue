@@ -3,8 +3,8 @@
     <!-- 个人资料 -->
     <view class="profile">
       <view class="meta">
-        <image class="avatar" src="http://static.botue.com/ugo/uploads/monkey.png"></image>
-        <text class="nickname">孙悟空</text>
+        <image class="avatar" :src="userInfo.avatarUrl || 'http://static.botue.com/ugo/uploads/monkey.png'"></image>
+        <text class="nickname">{{userInfo.nickName || '微信用户'}}</text>
       </view>
     </view>
     <!-- 统计 -->
@@ -38,15 +38,34 @@
     </view>
     <!-- 其它 -->
     <view class="extra">
-      <view class="item icon-arrow">联系客服</view>
-      <button class="item icon-arrow">意见反馈</button>
+      <view class="item icon-arrow" @click="makePhone">联系客服</view>
+      <button class="item icon-arrow" open-type="feedback">意见反馈</button>
     </view>
+	<button type="primary" @click="saveProfile">获取用户信息</button>
   </view>
 </template>
 
 <script>
+	import {mapState, mapGetters} from 'vuex';
   export default {
-    
+	computed: {
+		...mapState('m_user',['userProfile']),
+		...mapGetters('m_user', ['userInfo'])
+	  },
+    methods: {
+		makePhone() {
+			uni.makePhoneCall({
+				phoneNumber: '1008611'
+			})
+		},
+		async saveProfile() {
+			const [err, userProfile] = await uni.getUserProfile({
+				desc: '用于用户注册'
+			})
+			console.log(userProfile);
+			this.$store.commit('m_user/saveProfile', userProfile)
+		}
+	}
   }
 </script>
 
