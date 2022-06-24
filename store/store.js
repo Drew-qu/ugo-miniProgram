@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 // 导入 cart 模块
 import cartModule from './cart';
 // 导入 user 模块
-import userModule from 'user';
+import userModule from './user';
 
 // 安装 Vuex
 Vue.use(Vuex)

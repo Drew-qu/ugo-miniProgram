@@ -1,45 +1,57 @@
 <template>
-  <view class="wrapper">
-    <!-- 收货信息 -->
-    <view class="shipment">
-      <view class="dt">收货人: </view>
-      <view class="dd meta">
-        <text class="name">刘德华</text>
-        <text class="phone">13535337057</text>
-      </view>
-      <view class="dt">收货地址:</view>
-      <view class="dd">广东省广州市天河区一珠吉</view>
-    </view>
-    <!-- 购物车 -->
-    <view class="carts">
-      <view class="item">
-        <!-- 店铺名称 -->
-        <view class="shopname">优购生活馆</view>
-        <view class="goods" v-for="(item, index) in carts" :key="item.goods_id">
-          <!-- 商品图片 -->
-          <image class="pic" :src="item.goods_small_logo"></image>
-          <!-- 商品信息 -->
-          <view class="meta">
-            <view class="name">{{ item.goods_name }}</view>
-            <view class="price">
-              <text>￥</text>{{ item.goods_price }}<text>.00</text>
-            </view>
-            <!-- 加减 -->
-            <view class="amount">
-              <text class="reduce" @click="decreaseCount(index)">-</text>
-              <input type="number" :value="item.goods_count" class="number">
-              <text class="plus" @click="increaseCount(index)">+</text>
-            </view>
-          </view>
-          <!-- 选框 -->
-          <view class="checkbox" @click="toggleState(index)">
-            <icon type="success" size="20" :color="item.goods_state ? '#ea4451' : '#ccc'"></icon>
-          </view>
-        </view>
-      </view>
-    </view>
-    <!-- 其它 -->
-    <view class="extra">
+  <view class="wrapper">.
+	<template v-if="carts.length">
+		<!-- 收货信息 -->
+		<view class="shipment">
+		  <template v-if="address">
+			  <view class="dt">收货人: </view>
+			  <view class="dd meta">
+			    <text class="name">{{address.userName}}</text>
+			    <text class="phone">{{address.telNumber}}</text>
+			  </view>
+			  <view class="dt">收货地址:</view>
+			  <view class="dd">			
+				{{address.provinceName}}
+				{{address.cityName}}
+				{{address.countyName}}
+				{{address.detailInfo}}
+			  </view>
+		  </template>
+		  <button type="primary" @click="saveAddress" v-else>添加收货地址</button>
+		</view>
+		<!-- 购物车 -->
+		<view class="carts">
+		  <view class="item">
+		    <!-- 店铺名称 -->
+		    <view class="shopname">优购生活馆</view>
+		    <view class="goods" v-for="(item, index) in carts" :key="item.goods_id">
+		      <!-- 商品图片 -->
+		      <image class="pic" :src="item.goods_small_logo"></image>
+		      <!-- 商品信息 -->
+		      <view class="meta">
+		        <view class="name">{{ item.goods_name }}</view>
+		        <view class="price">
+		          <text>￥</text>{{ item.goods_price }}<text>.00</text>
+		        </view>
+		        <!-- 加减 -->
+		        <view class="amount">
+		          <text class="reduce" @click="decreaseCount(index)">-</text>
+		          <input type="number" :value="item.goods_count" class="number">
+		          <text class="plus" @click="increaseCount(index)">+</text>
+		        </view>
+		      </view>
+		      <!-- 选框 -->
+		      <view class="checkbox" @click="toggleState(index)">
+		        <icon type="success" size="20" :color="item.goods_state ? '#ea4451' : '#ccc'"></icon>
+		      </view>
+		    </view>
+		  </view>
+		</view>
+		<!-- 其它 -->
+		<view class="extra">
+		</view>
+	</template>
+	
       <label class="checkall" @click="toggleAll">
         <icon type="success" :color="allChecked ? '#ea4451' : '#ccc'" size="20"></icon>
         全选
@@ -62,6 +74,7 @@
 	},
 	computed: {
 		...mapState('m_cart', ['carts']),
+		...mapState('m_user', ['address']),
 		...mapGetters('m_cart', ['allChecked','checkedCount', 'amount'])
 	},
 	methods: {
@@ -76,6 +89,25 @@
 		},
 		increaseCount(index) {
 			this.$store.commit('m_cart/increaseCount', index)
+		},
+		async saveAddress(){
+			// 同步方式获取收货地址
+			const [err,{errMsg,...address}] = await uni.chooseAddress()
+			// 检查是否获取成功
+			if(err) {
+				return uni.showToast({
+					title: '获取地址失败 !',
+					icon: 'none'
+				})
+			}
+			// 调用  mutations 将地址存到 vuex 和本地存储
+			this.$store.commit('m_user/saveAddress', address)
+			// console.log(this.address);
+		},
+		goBuyGoods() {
+			uni.switchTab({
+				url: '/pages/category/index'
+			})
 		}
 	}
   }
