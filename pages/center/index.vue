@@ -95,6 +95,7 @@
         border-radius: 50%;
         border: 2rpx solid #fff;
         overflow: hidden;
+		margin-left: 30rpx;
       }
 
       .nickname {
