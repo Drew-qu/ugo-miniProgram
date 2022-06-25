@@ -23,28 +23,33 @@
 		<view class="carts">
 		  <view class="item">
 		    <!-- 店铺名称 -->
-		    <view class="shopname">优购生活馆</view>
-		    <view class="goods" v-for="(item, index) in carts" :key="item.goods_id">
-		      <!-- 商品图片 -->
-		      <image class="pic" :src="item.goods_small_logo"></image>
-		      <!-- 商品信息 -->
-		      <view class="meta">
-		        <view class="name">{{ item.goods_name }}</view>
-		        <view class="price">
-		          <text>￥</text>{{ item.goods_price }}<text>.00</text>
-		        </view>
-		        <!-- 加减 -->
-		        <view class="amount">
-		          <text class="reduce" @click="decreaseCount(index)">-</text>
-		          <input type="number" :value="item.goods_count" class="number">
-		          <text class="plus" @click="increaseCount(index)">+</text>
-		        </view>
-		      </view>
-		      <!-- 选框 -->
-		      <view class="checkbox" @click="toggleState(index)">
-		        <icon type="success" size="20" :color="item.goods_state ? '#ea4451' : '#ccc'"></icon>
-		      </view>
-		    </view>
+			<view class="shopname">优购生活馆</view>
+			
+			<van-swipe-cell right-width="65"  class="goods" v-for="(item, index) in carts" :key="item.goods_id">
+				<van-cell-group class='group'>
+				  <!-- 商品图片 -->
+				  <image class="pic" :src="item.goods_small_logo"></image>
+				  <!-- 商品信息 -->
+				  <view class="meta">
+					<view class="name">{{ item.goods_name }}</view>
+					<view class="price">
+					  <text>￥</text>{{ item.goods_price }}<text>.00</text>
+					</view>
+					<!-- 加减 -->
+					<view class="amount">
+					  <text class="reduce" @click="decreaseCount(index)">-</text>
+					  <input type="number" :value="item.goods_count" class="number">
+					  <text class="plus" @click="increaseCount(index)">+</text>
+					</view>
+				  </view>
+				  <!-- 选框 -->
+				  <view class="checkbox" @click="toggleState(index)">
+					<icon type="success" size="20" :color="item.goods_state ? '#ea4451' : '#ccc'"></icon>
+				  </view>
+				</van-cell-group>
+				<van-button slot="right" type="danger" class= 'button-delete' @click='hDelete(index)'>删除</van-button>
+			</van-swipe-cell>
+			
 		  </view>
 		</view>
 		<!-- 其它 -->
@@ -110,6 +115,10 @@
 			uni.switchTab({
 				url: '/pages/category/index'
 			})
+		},
+		hDelete(index) {
+			// console.log(index);
+			this.$store.commit('m_cart/deleteGoods', index)
 		}
 	}
   }
@@ -165,11 +174,12 @@
     .goods {
       display: flex;
       padding: 30rpx 20rpx 30rpx 0;
-      margin-left: 105rpx;
+      // margin-left: 105rpx;
       border-bottom: 1rpx solid #eee;
       background-color: #fff;
   
       position: relative;
+
 
       .checkbox {
         width: 101rpx;
@@ -181,7 +191,7 @@
         align-items: center;
 
         position: absolute;
-        left: -100rpx;
+        left: 0;
         top: 0;
       }
 
@@ -192,7 +202,7 @@
       .pic {
         width: 200rpx;
         height: 200rpx;
-        margin-right: 30rpx;
+        margin-left: 120rpx;
       }
 
       .meta {
@@ -203,8 +213,10 @@
       }
 
       .name {
-        width: 100%;
+        width: 50%;
         overflow: hidden;
+		transform: translateY(-120rpx);
+		margin-left: 345rpx;
         text-overflow: ellipsis;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -213,6 +225,7 @@
 
       .price {
         position: absolute;
+		left: 170rpx;
         bottom: 0;
 
         color: #ea4451;
@@ -223,6 +236,11 @@
         }
       }
 
+	 .button-delete {
+		display: flex;
+		margin-top: 80rpx;
+	  }
+	  
       .amount {
         position: absolute;
         bottom: 0;

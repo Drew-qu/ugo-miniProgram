@@ -62,7 +62,7 @@
 			const [err, userProfile] = await uni.getUserProfile({
 				desc: '用于用户注册'
 			})
-			console.log(userProfile);
+			// console.log(userProfile);
 			this.$store.commit('m_user/saveProfile', userProfile)
 		}
 	}

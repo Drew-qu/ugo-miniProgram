@@ -38,6 +38,10 @@ export default {
 		decreaseCount(state, index) {
 			if(state.carts[index].goods_count <= 1) return
 			state.carts[index].goods_count -= 1
+		},
+		deleteGoods(state, index) {
+			state.carts.splice(index, 1)
+			uni.setStorageSync('cart',state.carts)
 		}
 	},
 	getters: {
