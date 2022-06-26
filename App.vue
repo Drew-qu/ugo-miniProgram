@@ -1,10 +1,18 @@
 <script>
+	import { mapState } from 'vuex';
 export default {
-	onLaunch: function() {
-		console.log('App Launch')
+	computed: {
+		...mapState('m_user', ['token'])
+	},
+	
+ 	onLaunch: async function() {
+		// console.log('App Launch')
+		const [err,res] = await uni.login()
+		// console.log(res);
 	},
 	onShow: function() {
-		console.log('App Show')
+		// 在用户未登录的情况下获取 Token
+		if(!token) this.$store.dispatch('m_user/getToken')
 	},
 	onHide: function() {
 		console.log('App Hide')

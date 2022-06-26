@@ -21,8 +21,7 @@
     "navigationBarTitleText": "黑马优购",
 	"usingComponents": {
 		"van-button": "./wxcomponents/@vant/weapp/button/index",
-		"van-swipe-cell": "./wxcomponents/@vant/weapp/swipe-cell/index",
-		"van-field": "./wxcomponents/@vant/weapp/field/index"
+		"van-swipe-cell": "./wxcomponents/@vant/weapp/swipe-cell/index"
 	}
   },
   "tabBar": {
