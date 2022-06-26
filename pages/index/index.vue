@@ -69,7 +69,7 @@ export default {
 
 	methods: {
 		disableScroll(ev) {
-			this.pageHeight = ev.pageHeight + 'px'
+			this.pageHeight = ev.pageHeight
 		},
 		// 获取轮播图数据
 		async getSwiperList() {

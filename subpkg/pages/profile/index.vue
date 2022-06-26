@@ -5,7 +5,7 @@
 	</button>
 	<view class="nickname-wrapper">
 		<label style="width: 120rpx;" for="">昵称：</label>
-		<input type="nickname" placeholder="请输入昵称" :value="userProfile.nickname" @blur="onBlurNickName"/>
+		<van-field type="nickname" placeholder="请输入昵称" :value="userProfile.nickname" @blur="onBlurNickName"/>
 	</view>
 	<van-button type='primary' block @click='saveProfile'>确认</van-button>
   </view>

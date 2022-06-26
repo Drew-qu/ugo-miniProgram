@@ -1,5 +1,5 @@
 <template>
-  <view class="wrapper">.
+  <view class="wrapper">
 	<template v-if="carts.length">
 		<!-- 收货信息 -->
 		<view class="shipment">
@@ -29,15 +29,15 @@
 					  <!-- 商品图片 -->
 					  <image class="pic" :src="item.goods_small_logo" @click='goDetali(item.goods_id)'></image>
 					  <!-- 商品信息 -->
-					  <view class="meta" @click='goDetali(item.goods_id)'>
-						<view class="name">{{ item.goods_name }}</view>
+					  <view class="meta">
+						<view class="name" @click='goDetali(item.goods_id)'>{{ item.goods_name }}</view>
 						<view class="price">
 						  <text>￥</text>{{ item.goods_price }}<text>.00</text>
 						</view>
 						<!-- 加减 -->
 						<view class="amount">
 						  <text class="reduce" @click="decreaseCount(index)">-</text>
-						  <input type="number" :value="item.goods_count" class="number">
+						  <input type="number" :key="item.goods_id" :value="item.goods_count" class="number">
 						  <text class="plus" @click="increaseCount(index)">+</text>
 						</view>
 					  </view>
@@ -95,6 +95,7 @@
 			this.$store.commit('m_cart/increaseCount', index)
 		},
 		async saveAddress(){
+			// #ifdef MP-WEIXIN
 			// 同步方式获取收货地址
 			const [err,{errMsg,...address}] = await uni.chooseAddress()
 			// 检查是否获取成功
@@ -107,6 +108,14 @@
 			// 调用  mutations 将地址存到 vuex 和本地存储
 			this.$store.commit('m_user/saveAddress', address)
 			// console.log(this.address);
+			// #endif
+			
+			// #ifndef MP-WEIXIN
+			uni.showToast({
+				title: '暂不支持 H5',
+				icon: 'none'
+			})
+			// #endif
 		},
 		goBuyGoods() {
 			uni.switchTab({
@@ -210,7 +219,6 @@
         width: 200rpx;
         height: 200rpx;
         margin-left: 80rpx;
-		margin-bottom: 35rpx;
       }
 
       .meta {
@@ -232,8 +240,8 @@
 
       .price {
         position: absolute;
-		left: -160rpx;
-        bottom: -5rpx;
+		left: 0rpx;
+        bottom: 0rpx;
 
         color: #ea4451;
         font-size: 33rpx;
