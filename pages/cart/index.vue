@@ -24,32 +24,30 @@
 		  <view class="item">
 		    <!-- 店铺名称 -->
 			<view class="shopname">优购生活馆</view>
-			
-			<van-swipe-cell right-width="65"  class="goods" v-for="(item, index) in carts" :key="item.goods_id">
-				<van-cell-group class='group'>
-				  <!-- 商品图片 -->
-				  <image class="pic" :src="item.goods_small_logo"></image>
-				  <!-- 商品信息 -->
-				  <view class="meta">
-					<view class="name">{{ item.goods_name }}</view>
-					<view class="price">
-					  <text>￥</text>{{ item.goods_price }}<text>.00</text>
-					</view>
-					<!-- 加减 -->
-					<view class="amount">
-					  <text class="reduce" @click="decreaseCount(index)">-</text>
-					  <input type="number" :value="item.goods_count" class="number">
-					  <text class="plus" @click="increaseCount(index)">+</text>
-					</view>
-				  </view>
-				  <!-- 选框 -->
-				  <view class="checkbox" @click="toggleState(index)">
-					<icon type="success" size="20" :color="item.goods_state ? '#ea4451' : '#ccc'"></icon>
-				  </view>
-				</van-cell-group>
-				<van-button slot="right" type="danger" class= 'button-delete' @click='hDelete(index)'>删除</van-button>
-			</van-swipe-cell>
-			
+				<van-swipe-cell right-width="65"  class="goods" v-for="(item, index) in carts" :key="item.goods_id">
+					<van-cell-group class='group'>
+					  <!-- 商品图片 -->
+					  <image class="pic" :src="item.goods_small_logo" @click='goDetali(item.goods_id)'></image>
+					  <!-- 商品信息 -->
+					  <view class="meta" @click='goDetali(item.goods_id)'>
+						<view class="name">{{ item.goods_name }}</view>
+						<view class="price">
+						  <text>￥</text>{{ item.goods_price }}<text>.00</text>
+						</view>
+						<!-- 加减 -->
+						<view class="amount">
+						  <text class="reduce" @click="decreaseCount(index)">-</text>
+						  <input type="number" :value="item.goods_count" class="number">
+						  <text class="plus" @click="increaseCount(index)">+</text>
+						</view>
+					  </view>
+					  <!-- 选框 -->
+					  <view class="checkbox" @click="toggleState(index)">
+						<icon type="success" size="20" :color="item.goods_state ? '#ea4451' : '#ccc'"></icon>
+					  </view>
+					</van-cell-group>
+					<van-button slot="right" type="danger" class= 'button-delete' @click='hDelete(index)'>删除</van-button>
+				</van-swipe-cell>
 		  </view>
 		</view>
 		<!-- 其它 -->
@@ -76,7 +74,6 @@
   export default {
 	data() {
 		return {
-			
 		}
 	},
 	computed: {
@@ -119,6 +116,11 @@
 		hDelete(index) {
 			// console.log(index);
 			this.$store.commit('m_cart/deleteGoods', index)
+		},
+		goDetali(id) {
+			uni.navigateTo({
+				url: `/subpkg/pages/goods/index?query=` + id
+			})
 		}
 	}
   }
@@ -179,10 +181,15 @@
       background-color: #fff;
   
       position: relative;
-
-
+	
+	.group {
+		width: 750rpx;
+		height: 100%;
+		display: flex;
+	}
+	
       .checkbox {
-        width: 101rpx;
+        width: 80rpx;
         height: 100%;
         background-color: #fff;
 
@@ -202,7 +209,8 @@
       .pic {
         width: 200rpx;
         height: 200rpx;
-        margin-left: 120rpx;
+        margin-left: 80rpx;
+		margin-bottom: 35rpx;
       }
 
       .meta {
@@ -213,10 +221,9 @@
       }
 
       .name {
-        width: 50%;
+        width: 95%;
         overflow: hidden;
-		transform: translateY(-120rpx);
-		margin-left: 345rpx;
+		margin-left: 10rpx;
         text-overflow: ellipsis;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -225,8 +232,8 @@
 
       .price {
         position: absolute;
-		left: 170rpx;
-        bottom: 0;
+		left: -160rpx;
+        bottom: -5rpx;
 
         color: #ea4451;
         font-size: 33rpx;
@@ -238,7 +245,7 @@
 
 	 .button-delete {
 		display: flex;
-		margin-top: 80rpx;
+		margin-top: 50rpx;
 	  }
 	  
       .amount {

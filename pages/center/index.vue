@@ -3,8 +3,8 @@
     <!-- 个人资料 -->
     <view class="profile">
       <view class="meta">
-        <image class="avatar" :src="userInfo.avatarUrl || 'http://static.botue.com/ugo/uploads/monkey.png'"></image>
-        <text class="nickname">{{userInfo.nickName || '微信用户'}}</text>
+        <image class="avatar" :src="userProfile.avatarUrl"></image>
+        <text class="nickname">{{userProfile.nickname}}</text>
       </view>
     </view>
     <!-- 统计 -->
@@ -38,10 +38,10 @@
     </view>
     <!-- 其它 -->
     <view class="extra">
+	  <view class="item icon-arrow" @click="setProfile">个人资料</view>
       <view class="item icon-arrow" @click="makePhone">联系客服</view>
       <button class="item icon-arrow" open-type="feedback">意见反馈</button>
     </view>
-	<button type="primary" @click="saveProfile">获取用户信息</button>
   </view>
 </template>
 
@@ -49,8 +49,7 @@
 	import {mapState, mapGetters} from 'vuex';
   export default {
 	computed: {
-		...mapState('m_user',['userProfile']),
-		...mapGetters('m_user', ['userInfo'])
+		...mapState('m_user',['userProfile'])
 	  },
     methods: {
 		makePhone() {
@@ -64,6 +63,11 @@
 			})
 			// console.log(userProfile);
 			this.$store.commit('m_user/saveProfile', userProfile)
+		},
+		setProfile() {
+			uni.navigateTo({
+				url: '/subpkg/pages/profile/index'
+			})
 		}
 	}
   }
@@ -95,7 +99,7 @@
         border-radius: 50%;
         border: 2rpx solid #fff;
         overflow: hidden;
-		margin-left: 30rpx;
+		margin-left: 10rpx;
       }
 
       .nickname {
