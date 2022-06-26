@@ -61,7 +61,19 @@
         "setting" : {
             "urlCheck" : false
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "packOptions" : {
+            "ignore" : [
+                {
+                    "type" : "folder",
+                    "value" : "static/uploads"
+                },
+                {
+                    "type" : "folder",
+                    "value" : "static/images"
+                }
+            ]
+        }
     },
     "mp-alipay" : {
         "usingComponents" : true

@@ -60,7 +60,7 @@
 		  	goods_name: this.goodsDetail.goods_name,
 		  	goods_price: this.goodsDetail.goods_price,
 		  	goods_small_logo: this.goodsDetail.goods_small_logo,
-		  	goods_count: 1,
+		  	goods_number: 1,
 		  	goods_state: true
 		  }
 		  // 将数据存储到 mutations

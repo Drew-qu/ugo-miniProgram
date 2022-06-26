@@ -12,7 +12,8 @@ export default {
 	},
 	onShow: function() {
 		// 在用户未登录的情况下获取 Token
-		if(!token) this.$store.dispatch('m_user/getToken')
+		// if(!token) this.$store.dispatch('m_user/getToken')
+		this.$store.dispatch('m_user/getToken')
 	},
 	onHide: function() {
 		console.log('App Hide')

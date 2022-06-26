@@ -15,7 +15,7 @@ export default {
 				state.carts.push(goods)
 			} else {
 				// 存在相同商品时, 将数量加 1
-				result.goods_count += 1
+				result.goods_number += 1
 			}
 			// 存入本地
 			this.commit('m_cart/saveToStorage')
@@ -33,15 +33,20 @@ export default {
 			this.commit('m_cart/saveToStorage')
 		},
 		increaseCount(state, index) {
-			state.carts[index].goods_count += 1
+			state.carts[index].goods_number += 1
 		},
 		decreaseCount(state, index) {
-			if(state.carts[index].goods_count <= 1) return
-			state.carts[index].goods_count -= 1
+			if(state.carts[index].goods_number <= 1) return
+			state.carts[index].goods_number -= 1
 		},
 		deleteGoods(state, index) {
 			state.carts.splice(index, 1)
 			uni.setStorageSync('cart',state.carts)
+		},
+		// 更新购物车
+		updateToCart(state, goods) {
+			state.goods = goods
+			this.commit('m_cart/saveToStorage')
 		}
 	},
 	getters: {
@@ -59,14 +64,14 @@ export default {
 				// 如果商品状态未选中从则不参与统计
 				if(!item.goods_state) return count
 				// 累加每个商品的购买数量
-				return count += item.goods_count
+				return count += item.goods_number
 			}, 0)
 		},
 		// 计算商品的总结额
 		amount(state) {
 			return state.carts.reduce((amount, item) => {
 				if(!item.goods_state) return amount
-				return amount += item.goods_count * item.goods_price
+				return amount += item.goods_number * item.goods_price
 			}, 0)
 		}
 	}

@@ -9,7 +9,8 @@ import store from '@/store/store'
 uni.$http = $http
 
 // 配置请求根路径
-$http.baseUrl = 'https://api-hmugo-web.itheima.net'
+// $http.baseUrl = 'https://api-hmugo-web.itheima.net'
+$http.baseUrl = 'https://uinav.com'
 
 // 请求开始之前做一些事情
 $http.beforeRequest = function(options) {

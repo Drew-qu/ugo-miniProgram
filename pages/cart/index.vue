@@ -37,7 +37,7 @@
 						<!-- 加减 -->
 						<view class="amount">
 						  <text class="reduce" @click="decreaseCount(index)">-</text>
-						  <input type="number" :key="item.goods_id" :value="item.goods_count" class="number">
+						  <input type="number" :key="item.goods_id" :value="item.goods_number" class="number">
 						  <text class="plus" @click="increaseCount(index)">+</text>
 						</view>
 					  </view>
@@ -59,7 +59,7 @@
 		  <view class="total">
 		    合计: <text>￥</text><label>{{ amount }}</label><text>.00</text>
 		  </view>
-		  <view class="pay">结算({{checkedCount}})</view>
+		  <view class="pay" @click="goPayment">结算({{checkedCount}})</view>
 		</view>
 	</template>
 	<view class="tips" v-else>
@@ -71,15 +71,21 @@
 
 <script>
 	import { mapState, mapGetters } from 'vuex';
+	import {differenceWith, isEqual } from 'lodash';
   export default {
 	data() {
 		return {
+			order_number: ''
 		}
 	},
 	computed: {
 		...mapState('m_cart', ['carts']),
 		...mapState('m_user', ['address']),
-		...mapGetters('m_cart', ['allChecked','checkedCount', 'amount'])
+		...mapGetters('m_cart', ['allChecked','checkedCount', 'amount']),
+		...mapGetters('m_user', ['fullAddress']),
+		goods() {
+			return this.carts.filter(item => item.goods_state)
+		}
 	},
 	methods: {
 		toggleState(index) {
@@ -129,6 +135,59 @@
 		goDetali(id) {
 			uni.navigateTo({
 				url: `/subpkg/pages/goods/index?query=` + id
+			})
+		},
+		
+		async creatOrder() {
+			// 验证商品数据是否存在
+			if(this.goods.length === 0) {
+				return uni.showToast({
+					title: '请选中商品再进行结算操作!',
+					icon: 'none'
+				})
+			}
+			// 验证收货地址是否存在
+			if(!this.fullAddress) {
+				return uni.showToast({
+					title: '请先添加收货地址!',
+					icon: 'none'
+				})
+			}
+			// 创建订单接口
+			const {data: res} = await uni.$http.post('/api/public/v1/my/orders/create',{
+				order_price: this.amount,
+				consignee_addr: this.fullAddress,
+				goods: this.goods
+			})
+			// console.log('订单接口', res);
+			if(res.message.order_number) this.order_number = res.message.order_number
+		},
+		
+		async goPayment() {
+			await this.creatOrder()
+			// 检测订单是否创建成功
+			if(!this.order_number) {
+				return uni.showToast({
+					title: '订单创建失败!',
+					icon: 'none'
+				})
+			}
+			
+			// 将已经购买的商品移除
+			const diff = differenceWith(this.carts, this.goods, isEqual) 
+			this.$store.commit('m_cart/updateToCart', diff)
+			
+			const {data: res} = await uni.$http.post('/api/public/v1/my/orders/req_unifiedorder', {
+				order_number: this.order_number
+			})
+			console.log('商品移除',res.message.pay);
+			uni.requestPayment({
+				...res.message.pay,
+				complete() { 
+					uni.navigateTo({
+						// url: '/subpkg/pages/order/index'
+					})
+				}
 			})
 		}
 	}
